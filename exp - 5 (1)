@@ -1,0 +1,70 @@
+import java.io.*;
+
+// Student class implements Serializable to allow its objects to be serialized
+class Student implements Serializable {
+    int id;
+    String name;
+    double gpa;
+
+    // Constructor to initialize student details
+    public Student(int id, String name, double gpa) {
+        this.id = id;
+        this.name = name;
+        this.gpa = gpa;
+    }
+
+    // Method to display student details
+    public void displayStudentDetails() {
+        System.out.println("Student ID: " + id);
+        System.out.println("Student Name: " + name);
+        System.out.println("Student GPA: " + gpa);
+    }
+}
+
+public class StudentSerializationDemo {
+
+    // Method to serialize the Student object to a file
+    public static void serializeStudent(Student student, String filename) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(student);
+            System.out.println("Student object serialized successfully.");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IOException occurred during serialization: " + e.getMessage());
+        }
+    }
+
+    // Method to deserialize the Student object from a file
+    public static Student deserializeStudent(String filename) {
+        Student student = null;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            student = (Student) in.readObject();
+            System.out.println("Student object deserialized successfully.");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IOException occurred during deserialization: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Class not found: " + e.getMessage());
+        }
+        return student;
+    }
+
+    public static void main(String[] args) {
+        // Create a Student object
+        Student student = new Student(101, "Arshiya", 7.85);
+
+        // Serialize the Student object
+        String filename = "student.ser";
+        serializeStudent(student, filename);
+
+        // Deserialize the Student object
+        Student deserializedStudent = deserializeStudent(filename);
+
+        // Display the details of the deserialized student
+        if (deserializedStudent != null) {
+            deserializedStudent.displayStudentDetails();
+        }
+    }
+}
